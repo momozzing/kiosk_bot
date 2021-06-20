@@ -20,8 +20,8 @@ print(json_data)
 
 for text in json_data:
     tmp = []
-    json_data[id] == json_data[id] 
+    if json_data[id] == json_data[id]: 
 
-    tmp.append(json_data['form'], json_data['original_form'])
+        tmp.append(json_data['form'], json_data['original_form'])
 
     print(tmp)
