@@ -1,11 +1,12 @@
 import json # import json module
 import pandas as pd 
+import numpy as np
 
 # with statement
-with open('data/SDRW2000000001.json') as json_file:
+with open("data/SDRW2000000001.json",'r', encoding='UTF-8') as json_file:
     json_data = json.load(json_file)
 
-# print(json_data.keys())
+# print(json_data)
 
 # print(json_data['document'][0]['utterance'])
 
@@ -13,15 +14,41 @@ json_data = pd.DataFrame(json_data['document'][0]["utterance"],
                          columns = ['id', 'form', 'original_form', 'speaker_id', 'start', 'end', 'note'])
 
 
-json_data= json_data.drop(['id', 'start', 'end','note'], axis=1)
+form_json_data= json_data.drop(['id', 'start', 'end','note','original_form'], axis=1)
+original_form_json_data= json_data.drop(['id', 'start', 'end','note','form'], axis=1)
 
-print(json_data)
+print(form_json_data.shape)
+print(original_form_json_data.shape)
 
 
-for text in json_data:
-    tmp = []
-    if json_data[id] == json_data[id]: 
+# print(json_data)
 
-        tmp.append(json_data['form'], json_data['original_form'])
+# json_data.set_index('speaker_id', inplace = True)
 
-    print(tmp)
+# print(json_data)
+
+# for form, original_form in zip(json_data['form'], json_data['original_form']):
+#     print(form, original_form)
+    # if text['speaker_id'] == text['speaker_id']: 
+
+    #     print(text)
+
+    #     tmp.append(json_data['form'], json_data['original_form'])
+
+    # print(tmp)
+
+for line in range(0, len(form_json_data)):
+    # for id in json_data['speaker_id']:
+    if form_json_data['speaker_id'][line] == form_json_data['speaker_id'][line+1]:
+        tmp = []
+        tmp.append(form_json_data['form'].values)
+
+    elif form_json_data['speaker_id'].empty != form_json_data['speaker_id'].empty:
+        break
+print(tmp)
+
+tmp = pd.DataFrame(tmp)
+
+print(tmp)
+# test = json_data['form'][0] + json_data['form'][1]
+# print(test)
