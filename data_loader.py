@@ -62,3 +62,5 @@ for idx, (utterance, turnID) in enumerate(
 # print(tmp)
 # # test = json_data['form'][0] + json_data['form'][1]
 # # print(test)
+
+## 2021년 6월 23~25일 제주도 KCC학회 참여 -> 내일 커밋 못할예정 
