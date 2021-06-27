@@ -64,3 +64,4 @@ for idx, (utterance, turnID) in enumerate(
 # # print(test)
 
 ## 2021년 6월 23~25일 제주도 KCC학회 참여 -> 내일 커밋 못할예정 
+## 집현전 고급스터디 Constractive LOSS 논문 찾아서 읽어보고있어 InfoNCE Loss도 보자 https://nuguziii.github.io/survey/S-006/
