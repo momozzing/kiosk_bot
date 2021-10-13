@@ -1,67 +1,76 @@
-import json # import json module
 import pandas as pd 
-import numpy as np
+from tqdm import tqdm
 
-# with statement
-# with open("korean_dialogue_history_summary/Training/Train/education/education.json",'r', encoding='UTF-8') as json_file:
-#     json_data = json.load(json_file)
+train_data = pd.read_csv("data/cafe_data.txt", delimiter="\t", encoding= "utf-8")
 
-json_data = open('korean_dialogue_history_summary/Training/Train/education/education.json').read().splitlines()
+tmp = []
+for idx in tqdm(range(len(train_data))):
+    sentense, speakerid, sentenseid = train_data["SENTENCE"][idx], train_data["SPEAKERID"][idx], train_data["SENTENCEID"][idx]
+    tmp.append([sentense] + [speakerid] + [sentenseid])
+ 
+new_df = pd.DataFrame(tmp, columns=['SENTENCE', 'SPEAKERID', 'SENTENCEID'])
 
-# print(json_data[5])
+# print(new_df)
 
-utterance_list = []
-trun_id_list = []
-for idx, (utterance, turnID) in enumerate(
-                        zip(utterance_list['utterance'], trun_id_list['turnID'])):
-                        
-                        print(utterance_list)
-                        print(trun_id_list)
-                        
+# print(new_df.isnull().sum())
 
-# json_data = pd.DataFrame(for i in range(0, len(form_json_data)):
-#                          json_data['data'][0]["body"]['dialogue'], 
-#                          columns = ['utterance', 'utteranceID', 'participantID', 'date', 'turnID', 'time'])
 
-# print(json_data)
-# form_json_data= json_data.drop(['id', 'start', 'end','note','original_form'], axis=1)
-# original_form_json_data= json_data.drop(['id', 'start', 'end','note','form'], axis=1)
+text = []
+label = []
 
-# print(form_json_data.shape)
-# print(original_form_json_data.shape)
-                                   
+session_df = new_df.set_index('session.ID')
 
-# # print(json_data)
+for i in range(len(new_df)):
+    ithSessionDF=new_df.loc[i][['SENTENCE','SPEAKERID','SENTENCEID']]
 
-# # json_data.set_index('speaker_id', inplace = True)
+    # if not isinstance(ithSessionDF, pd.DataFrame):
+    #     continue
+    # ithSessionDF= ithSessionDF.reset_index()
 
-# # print(json_data)
+    current_data = ""
+    for idx in range(len(ithSessionDF)):
+        line = ithSessionDF.loc[idx]
+        print(line)
+        current_data = current_data + " " + line["SENTENCE"]
 
-# # for form, original_form in zip(json_data['form'], json_data['original_form']):
-# #     print(form, original_form)
-#     # if text['speaker_id'] == text['speaker_id']: 
+        print(current_data)
 
-#     #     print(text)
+        # if idx == 1: ## session.ID가 홀수일때 
+        #     text.append(current_data)
+        #     label.append(line["SENTENCE"])
 
-#     #     tmp.append(json_data['form'], json_data['original_form'])
+# print(new_df['SPEAKERID']) 
 
-#     # print(tmp)
+# for i in range(len(new_df)):
+#     if new_df['SPEAKERID'][i] % 2 == 1:
+#         current_data = new_df['SENTENCE'][i]
+#     else:
+#         label_data = new_df['SENTENCE'][i]
 
-# for line in range(0, len(form_json_data)):
-#     # for id in json_data['speaker_id']:
-#     if form_json_data['speaker_id'][line] == form_json_data['speaker_id'][line+1]:
-#         tmp = []
-#         tmp.append(form_json_data['form'].values)
+#     print(label_data)
 
-#     elif form_json_data['speaker_id'].empty != form_json_data['speaker_id'].empty:
-#         break
-# print(tmp)
 
-# tmp = pd.DataFrame(tmp)
 
-# print(tmp)
-# # test = json_data['form'][0] + json_data['form'][1]
-# # print(test)
+# for i in range(1, len(train_data)):
+#     ithSessionDF=new_df.loc[i][['SENTENCE','SPEAKERID','SENTENCEID']]
 
-## 2021년 6월 23~25일 제주도 KCC학회 참여 -> 내일 커밋 못할예정 
-## 집현전 고급스터디 Constractive LOSS 논문 찾아서 읽어보고있어 InfoNCE Loss도 보자 https://nuguziii.github.io/survey/S-006/
+#     # if not isinstance(ithSessionDF, pd.DataFrame):
+#     #     continue
+#     # ithSessionDF= ithSessionDF.reset_index()
+
+#     # print(ithSessionDF)
+
+#     current_data = ""
+#     for idx in range(len(ithSessionDF)):
+#         line = ithSessionDF.loc[idx]
+#         current_data = current_data + " " + line["SENTENCE"]
+
+#         print(current_data)
+
+
+# text_data = pd.DataFrame(text, columns=['text'])
+# label_data = pd.DataFrame(label, columns=['label'])
+
+# all_data = pd.concat([text_data,label_data],axis=1)
+
+# print(all_data)
