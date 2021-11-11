@@ -69,3 +69,5 @@ while True:
     # gen = tokenizer.convert_ids_to_tokens((classification_results[0]))
 
     # print(f"Result: {gen}")
+  
+  ### todo -> 파이프라인으로 가볍게 해보기.  아니면 허깅페이스에 배포방법도 생각해보자. 
