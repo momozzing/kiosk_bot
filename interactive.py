@@ -53,7 +53,7 @@ while True:
     sample_output = model.generate(
         input_ids, 
         do_sample=True, 
-        max_length=50, 
+        max_new_tokens=50, 
         top_k=50
     )
     print("Output:\n" + 100 * '-')
