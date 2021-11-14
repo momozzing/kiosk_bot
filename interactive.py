@@ -56,6 +56,7 @@ while True:
         max_new_tokens=50, 
         top_k=50
     )
+
     print("Output:\n" + 100 * '-')
     print(tokenizer.decode(sample_output[0], skip_special_tokens=True))
 
@@ -70,4 +71,4 @@ while True:
 
     # print(f"Result: {gen}")
   
-  ### todo -> 파이프라인으로 가볍게 해보기.  아니면 허깅페이스에 배포방법도 생각해보자. 
+  ### todo -> 허깅페이스에 배포방법도 생각해보자. 
