@@ -9,7 +9,7 @@ from tqdm import tqdm
 from transformers import AutoModelWithLMHead, AutoTokenizer
 
 model_name = "skt/kogpt2-base-v2"
-ckpt_name = "model_save/skt-kogpt2-base-v2.pt"
+ckpt_name = "model_save/skt-kogpt2-base-v2-test.pt"
 model = AutoModelWithLMHead.from_pretrained(model_name)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
@@ -40,6 +40,7 @@ while True:
         return_tensors="pt",
         truncation=True,
         padding=True,
+        max_length=30
     )
 
     input_ids = tokens.input_ids.cuda()
@@ -54,9 +55,10 @@ while True:
         input_ids, 
         do_sample=True, 
         max_new_tokens=50, 
-        top_k=50
+        top_k=50,
+        # return_dict_in_generate=True
     )
-
+    # print(sample_output.shape)
     print("Output:\n" + 100 * '-')
     print(tokenizer.decode(sample_output[0], skip_special_tokens=True))
 
@@ -71,4 +73,4 @@ while True:
 
     # print(f"Result: {gen}")
   
-  ### todo -> 허깅페이스에 배포방법도 생각해보자. 
+  ### todo -> 허깅페이스에 배포방법도 생각해보자.

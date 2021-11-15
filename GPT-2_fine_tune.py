@@ -100,7 +100,7 @@ for epoch in range(args.epoch):
         text_tokens = tokenizer(
             text,
             return_tensors="pt",
-            max_length=100,
+            max_length=50,
             truncation=True,
             padding=True,
         )
@@ -157,7 +157,7 @@ for epoch in range(args.epoch):
         eval_text_tokens = tokenizer(
             eval_text,
             return_tensors="pt",
-            max_length=100,
+            max_length=50,
             truncation=True,
             padding=True,
         )
