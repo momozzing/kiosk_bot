@@ -58,7 +58,7 @@ while True:
         top_k=50,
         # return_dict_in_generate=True
     )
-    # print(sample_output.shape)
+    
     print("Output:\n" + 100 * '-')
     print(tokenizer.decode(sample_output[0], skip_special_tokens=True))
 
