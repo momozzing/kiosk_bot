@@ -40,25 +40,27 @@ while True:
         return_tensors="pt",
         truncation=True,
         padding=True,
-        max_length=30
+        max_length=50
     )
 
     input_ids = tokens.input_ids.cuda()
     attention_mask = tokens.attention_mask.cuda()
 
-    output = model.forward(
-        input_ids=input_ids,
-        attention_mask=attention_mask,
-    )
+    # output = model.forward(
+    #     input_ids=input_ids,
+    #     attention_mask=attention_mask,
+    # )
     # classification_results = output.logits.argmax(-1)
     sample_output = model.generate(
         input_ids, 
         do_sample=True, 
+        max_length=50,
         max_new_tokens=50, 
         top_k=50,
         # return_dict_in_generate=True
     )
-    
+    print(sample_output[0])
+    print(sample_output.shape)
     print("Output:\n" + 100 * '-')
     print(tokenizer.decode(sample_output[0], skip_special_tokens=True))
 
