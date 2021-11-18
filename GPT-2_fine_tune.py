@@ -113,14 +113,8 @@ for epoch in range(args.epoch):
         )
 
         input_ids = text_tokens.input_ids.cuda()
-        # print(input_ids.shape)
         attention_mask = text_tokens.attention_mask.cuda()
         label_input_ids = label_tokens.input_ids.cuda()
-        # print(label_input_ids.shape)
-        # label_attention_mask = label_tokens.attention_mask.cuda()
-
-        # input_ids = input_ids.cuda()
-        # attention_mask = input_ids.cuda()
 
         output = engine.forward(
             input_ids=input_ids,
@@ -128,28 +122,19 @@ for epoch in range(args.epoch):
             labels=input_ids,
         )
 
-        # output = engine.forward(
-        #     input_ids=input_ids + label_input_ids,
-        #     attention_mask=attention_mask + label_attention_mask,
-        #     labels=label_input_ids,
-        # )
-
-
         loss = output.loss
         wandb.log({"loss": loss})
         engine.backward(loss)
         optimizer.step()
-        classification_results = output.logits.argmax(-1)
 
-        acc = 0
-        for res, lab in zip(classification_results, label):
-            if res == lab:
-                acc += 1
-        # correct = 0
-        # correct += sum(classification_results.detach().cpu()==label_input_ids.detach().cpu())    
+        pred = output.logits.argmax(-1)     
 
+        correct = 0
+        for pre, lab in zip(pred, label):
+            if pre == lab:
+                correct += 1
 
-        wandb.log({"acc": acc / len(classification_results)})
+        wandb.log({"acc": correct / len(train_loader)})
 
     model.eval()
     for eval in tqdm(eval_loader):
@@ -170,11 +155,8 @@ for epoch in range(args.epoch):
         )
 
         input_ids = eval_text_tokens.input_ids.cuda()
-        # print(input_ids.shape)
         attention_mask = eval_text_tokens.attention_mask.cuda()
         label_input_ids = eval_label_tokens.input_ids.cuda()
-        # print(label_input_ids.shape)
-        # label_attention_mask = label_tokens.attention_mask.cuda()
 
         eval_out = engine.forward(
             input_ids=input_ids,
@@ -182,17 +164,15 @@ for epoch in range(args.epoch):
             labels=input_ids,
         )
         wandb.log({"eval_loss": eval_out.loss})
-        classification_results = eval_out.logits.argmax(-1)
 
-        acc = 0
-        for res, lab in zip(classification_results, eval_label):
-            if res == lab:
-                acc += 1
-        # correct = 0
-        # correct += sum(classification_results.detach().cpu()==label_input_ids.detach().cpu())    
+        eval_pred = eval_out.logits.argmax(-1)        
 
+        eval_correct = 0
+        for pre, lab in zip(eval_pred, eval_label):
+            if pre == lab:
+                eval_correct += 1
 
-        wandb.log({"eval_acc": acc / len(classification_results)})
+        wandb.log({"eval_acc": eval_correct / len(eval_loader)})
         wandb.log({"epoch": epochs})
 
-    torch.save(model.state_dict(), f"model_save/{model_name.replace('/', '-')}-test.pt")
+    torch.save(model.state_dict(), f"model_save/{model_name.replace('/', '-')}.pt")
