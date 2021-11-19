@@ -4,7 +4,9 @@ KoGPT2를 이용한 간단한 kiosk chatbot 입니다.
 
 데이터는 AiHub의 [한국어대화 데이터](https://aihub.or.kr/aidata/85)를 사용했습니다. 
 
-데이터는 학습만 진행하였고 공개는 하지 않습니다. 
+데이터는 학습만 진행하였고 공개는 하지 않습니다.
+
+------------
 ## Architecture 
 Hugging face의 예제들을 보며 구현하였습니다. 
 
@@ -14,12 +16,14 @@ Hugging face의 예제들을 보며 구현하였습니다.
 
 ```output``` 은 ```P(system|user)```를 최대화 시키기위해 모델을 학습하였다. 
 
+------------
 ## Install 
-```
+```sh
 git clone https://github.com/momozzing/kiosk_bot.git
 pip install requirements.txt
 ```
 
+------------
 ## How to train?
 기존 학습된 데이터로 대화를 하고 싶으시면 ```install``` 후 ```How to chat``` 으로 넘어가셔도 됩니다. 
 ```
@@ -32,6 +36,7 @@ deepspeed --num_gpus=1 GPT-2_fine_tune.py ## 변경후 이것으로 실행하시
 그후 생성된 skt-kogpt2-base-v2.pt 를 사용하시면 됩니다. 
 ```
 
+------------
 ## How to chat?
 ```
 python interactive.py   ##기존 데이터로 채팅하기
@@ -59,6 +64,7 @@ User: 감사합니다
 System: 좋은 하루 보내세요
 ```
 
+------------
 ## Reference
 [HuggingFace](https://huggingface.co/transformers/index.html)
 
