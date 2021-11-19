@@ -17,7 +17,6 @@ Hugging face의 예제들을 보며 구현하였습니다.
 ## Install 
 ```
 git clone https://github.com/momozzing/kiosk_bot.git
-git lfs pull     ## lfs 가 없으면 설치하셔야 합니다. 
 pip install requirements.txt
 ```
 
