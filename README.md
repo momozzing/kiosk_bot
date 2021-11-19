@@ -29,11 +29,17 @@ cd kiosk_bot/data  ## 안에 원하시는 데이터를 넣으시면 됩니다.
 kiosk_bot/GPT-2_fine_tune.py  ## 안에 데이터 loader들의 파일이름을 변경해주시면 됩니다. 
 
 deepspeed --num_gpus=1 GPT-2_fine_tune.py ## 변경후 이것으로 실행하시면 됩니다. 
+
+그후 생성된 skt-kogpt2-base-v2.pt 를 사용하시면 됩니다. 
 ```
 
 ## How to chat?
 ```
-python interactive.py
+python interactive.py   ##기존 데이터로 채팅하기
+
+python new_data_interactive.py  ##새로운 데이터로 파인튜닝한것 pt파일 불러와서 채팅하기.
+
+--기존 데이터 채팅--
 
 User: 아메리카노 주세요
 System: 따뜻한 거 드릴까요?
