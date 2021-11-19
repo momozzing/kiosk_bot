@@ -4,8 +4,7 @@ python interactive.py
 import torch
 from transformers import AutoModelWithLMHead, AutoTokenizer
 
-model_name = "skt/kogpt2-base-v2"
-ckpt_name = "model_save/skt-kogpt2-base-v2-test.pt"
+model_name = "momo/gpt2-kiosk"
 model = AutoModelWithLMHead.from_pretrained(model_name)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
@@ -17,9 +16,7 @@ SPECIAL_TOKENS = {
     }
 SPECIAL_TOKENS_VALUES = ["<bos>", "<eos>", "<pad>", "<seq>"]
 tokenizer.add_special_tokens(SPECIAL_TOKENS)
-model.resize_token_embeddings(len(tokenizer)) 
-
-model.load_state_dict(torch.load(ckpt_name, map_location="cpu"))
+# # model.resize_token_embeddings(len(tokenizer)) 
 model.cuda()
 
 with torch.no_grad():
