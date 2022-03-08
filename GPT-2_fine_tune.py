@@ -24,7 +24,6 @@ SPECIAL_TOKENS = {
     "pad_token": "<pad>",
     "sep_token": "<seq>"
     }
-SPECIAL_TOKENS_VALUES = ["<bos>", "<eos>", "<pad>", "<seq>"]
 tokenizer.add_special_tokens(SPECIAL_TOKENS)
 
 model = AutoModelWithLMHead.from_pretrained(
@@ -44,7 +43,7 @@ parser.add_argument("--eos_token", default=tokenizer.eos_token, type=str)
 args = parser.parse_args()
 
 wandb.init(project="mobot", name=f"mobot-{model_name}")
-train_data = pd.read_csv("data/cafe_clear_data_test.tsv", delimiter="\t")
+train_data = pd.read_csv("data/cafe_clear_data.tsv", delimiter="\t")
 train_data = train_data[:3000]
 train_text, train_labels = (
     train_data["text"].values,
