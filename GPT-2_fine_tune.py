@@ -43,7 +43,7 @@ parser.add_argument("--eos_token", default=tokenizer.eos_token, type=str)
 args = parser.parse_args()
 
 wandb.init(project="mobot", name=f"mobot-{model_name}")
-train_data = pd.read_csv("data/cafe_clear_data.tsv", delimiter="\t")
+train_data = pd.read_csv("data/cafe_clear_data_test.tsv", delimiter="\t")
 train_data = train_data[:3000]
 train_text, train_labels = (
     train_data["text"].values,
@@ -89,9 +89,7 @@ optimizer = DeepSpeedCPUAdam(
 engine, optimizer, _, _ = deepspeed.initialize(
     args=args, model=model, optimizer=optimizer
 )
-epochs = 0
 for epoch in range(args.epoch):
-    epochs += 1
     model.train()
     for train in tqdm(train_loader):
         optimizer.zero_grad()
@@ -103,17 +101,9 @@ for epoch in range(args.epoch):
             truncation=True,
             padding=True,
         )
-        label_tokens = tokenizer(
-            label,
-            return_tensors="pt",
-            max_length=50,
-            truncation=True,
-            padding=True,
-        )
 
         input_ids = text_tokens.input_ids.cuda()
         attention_mask = text_tokens.attention_mask.cuda()
-        label_input_ids = label_tokens.input_ids.cuda()
 
         output = engine.forward(
             input_ids=input_ids,
@@ -126,52 +116,27 @@ for epoch in range(args.epoch):
         engine.backward(loss)
         optimizer.step()
 
-        pred = output.logits.argmax(-1)     
+    with torch.no_grad():
+        model.eval()
+        for eval in tqdm(eval_loader):
+            eval_text, eval_label = eval["data"], eval["label"]
+            eval_text_tokens = tokenizer(
+                eval_text,
+                return_tensors="pt",
+                max_length=50,
+                truncation=True,
+                padding=True,
+            )
 
-        correct = 0
-        for pre, lab in zip(pred, label):
-            if pre == lab:
-                correct += 1
+            input_ids = eval_text_tokens.input_ids.cuda()
+            attention_mask = eval_text_tokens.attention_mask.cuda()
 
-        wandb.log({"acc": correct / len(train_loader)})
+            eval_out = engine.forward(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                labels=input_ids,
+            )
+            wandb.log({"eval_loss": eval_out.loss})
+            wandb.log({"epoch": epoch+1})
 
-    model.eval()
-    for eval in tqdm(eval_loader):
-        eval_text, eval_label = eval["data"], eval["label"]
-        eval_text_tokens = tokenizer(
-            eval_text,
-            return_tensors="pt",
-            max_length=50,
-            truncation=True,
-            padding=True,
-        )
-        eval_label_tokens = tokenizer(
-            eval_label,
-            return_tensors="pt",
-            max_length=50,
-            truncation=True,
-            padding=True,
-        )
-
-        input_ids = eval_text_tokens.input_ids.cuda()
-        attention_mask = eval_text_tokens.attention_mask.cuda()
-        label_input_ids = eval_label_tokens.input_ids.cuda()
-
-        eval_out = engine.forward(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            labels=input_ids,
-        )
-        wandb.log({"eval_loss": eval_out.loss})
-
-        eval_pred = eval_out.logits.argmax(-1)        
-
-        eval_correct = 0
-        for pre, lab in zip(eval_pred, eval_label):
-            if pre == lab:
-                eval_correct += 1
-
-        wandb.log({"eval_acc": eval_correct / len(eval_loader)})
-        wandb.log({"epoch": epochs})
-
-    torch.save(model.state_dict(), f"model_save/{model_name.replace('/', '-')}.pt")
+        torch.save(model.state_dict(), f"model_save/{model_name.replace('/', '-')}.pt")
